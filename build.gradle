@@ -1,0 +1,30 @@
+plugins {
+  id "com.moowork.node" version "1.2.0"
+}
+node {
+  dosnload = true // Install nodeJS so that the S.O. doesn't need it installed
+}
+
+task build 
+
+task zip(type: Zip) {   // Using existing task type
+  from ('.') {
+    include "*"
+    include "bin/**"
+    include "data/**"
+    include "node_modules/**"
+    include "public/**"
+    include "routes/**"
+    include "views/**"
+  }
+  destinationDir(file("dist"))
+  baseName "trainSchedule"
+}
+
+
+build.dependsOn zip
+zip.dependsOn npm_build
+build.dependsOn npm_build
+npm_build.dependsOn npmInstall
+npm_build.dependsOn npm_test
+npm_test.dependsOn npmInstall   // Gradle can run tasks in parallel, npm_test depends on npmInstall, so better put it
